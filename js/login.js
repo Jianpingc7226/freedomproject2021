@@ -71,17 +71,34 @@ var userInformation = "";
   profileButton.addEventListener("click",function(){
     profilePage.classList.remove('hide')
   })
-  
   var userName = userInformation.displayName;
   var userSchool = "";
   
+  var docRef = db.collection("user").doc(userInformation.uid)
+  
+  docRef.get()
+    .then((doc) => {
+      if (doc.exists) {
+            console.log("Document data:", doc.data());
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    }).catch((error) => {
+        console.log("Error getting document:", error);
+  });
+
+
+
+
+
+
+
   
   const profileUserAvatar =document.querySelector(".profileAvatar");
-      
   const profileUserName = document.querySelector(".profileName");
   profileUserName.addEventListener("keyup",function(event){
     userName= event.target.value
-    console.log(userName)
   })
   const profileUserEmail = document.querySelector(".profileEmail");
   const profileUserSchool = document.querySelector(".profileSchool");
