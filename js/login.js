@@ -71,15 +71,15 @@ var userInformation = "";
   profileButton.addEventListener("click",function(){
     profilePage.classList.remove('hide')
   })
-  var userName = userInformation.displayName;
+  var userName = "";
   var userSchool = "";
   
-  var docRef = db.collection("User").doc(userInformation.uid)
+  // var docRef = db.collection("User").doc(userInformation.uid)
   
-  docRef.onSnapshot(function(doc){
-    const data = doc.data();
-    console.log(data.school)
-  });
+  // docRef.onSnapshot(function(doc){
+  //   const data = doc.data();
+  //   console.log(data.school)
+  // });
 
 
   
@@ -96,7 +96,7 @@ var userInformation = "";
   const profileUpdate = document.getElementById('updateProfile');
   profileUpdate.addEventListener("click",function(){
     db.collection("User").doc(userInformation.uid).set({
-        name:userName,
+        name:profileUserName.value,
         email:userInformation.email,
         school:userSchool
     })
