@@ -80,7 +80,7 @@ var userInformation = "";
   //   const data = doc.data();
   //   console.log(data.school)
   // });
-
+  //this line of code should pull user information from firestore cloud, but for some reason this didn't work  PS:remember to ask Mr.Mueller next week
 
   
   const profileUserAvatar =document.querySelector(".profileAvatar");
