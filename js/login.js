@@ -13,16 +13,10 @@
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
-  var bigOne = document.getElementById('bigOne');
-  var dbRef = firebase.database().ref().child('text');
-  dbRef.on('value', snap => bigOne.innerText = snap.val());
 
-  document.addEventListener("DOMContentLoaded", event => {
-      const app = firebase.app();
-  })
-  
+  const database = firebase.database();
   const auth = firebase.auth();
-
+  const db = firebase.firestore();
   const Login = document.querySelector("#googleLogin")
   const Loginbox = document.querySelector(".logInBox")
   const rightTopImg = document.querySelector(".Avatar")
@@ -51,6 +45,7 @@ var userInformation = "";
   firebase.auth().onAuthStateChanged(firebaseUser =>{
     if(firebaseUser) {
       console.log(firebaseUser)
+      userInformation = firebaseUser
       Loginbox.classList.add('hide')
       logout.classList.remove('hide')
       rightTopImg.classList.remove('hide')
@@ -72,12 +67,12 @@ var userInformation = "";
   //This comes the profile part.(firebase firestorge)
   
   var user = firebase.auth().currentUser;
-  
+  //When the profile button are clicked
   profileButton.addEventListener("click",function(){
     profilePage.classList.remove('hide')
   })
   
-  var userName="";
+  var userName = userInformation.displayName;
   var userSchool = "";
   
   
@@ -86,13 +81,27 @@ var userInformation = "";
   const profileUserName = document.querySelector(".profileName");
   profileUserName.addEventListener("keyup",function(event){
     userName= event.target.value
+    console.log(userName)
   })
   const profileUserEmail = document.querySelector(".profileEmail");
   const profileUserSchool = document.querySelector(".profileSchool");
-  profileUserSchool.addEventListener("keyup",function(event){
-    userSchool= event.trager.value
+  profileUserSchool.addEventListener("keyup",function(School){
+    userSchool= School.target.value
   })
   const profileUpdate = document.getElementById('updateProfile');
+  profileUpdate.addEventListener("click",function(){
+    db.collection("User").doc(userInformation.uid).set({
+        name:userName,
+        email:userInformation.email,
+        school:userSchool
+    })
+    .then(() => {
+        console.log("Document successfully written!");
+    })
+    .catch((error) => {
+        console.error("Error writing document: ", error);
+    });
+  })
   
 
   
