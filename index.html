@@ -18,26 +18,40 @@
     <body>
     <ul>
         <li><a href="index.html"><img src="LogoMakr_2ubFXD.png" height="21px"></a></li>
-        <li><a id="forum">forum</a></li>
+        <li class="forum notLoginyet"><a>forum</a></li>
+        <li class="goToProfile notLoginyet"><a>profile</a></li>
         <!--<li><a id="Homepage">About</a></li>-->
-        <li clss="userAvatar"><a><img height="30px" class = "Avatar"></a></li>
         <li id = "signOut" ><a>Logout</a></li>
+        <li id = "Navigationimg"><a><img height="30px" class = "Avatar"></a></li>
     </ul>
         <div class="block">
     </div>
         
         
     <div class="logInBox center">
-        <h1 id="bigOne"></h1>
-    
-    <button id="googleLogin">
+            <h1 id="bigOne"></h1>
         
-        Login with google
-        
-    </button>
+        <button id="googleLogin">
+            
+            Login with google
+            
+        </button>
     </div>
     
     
+    
+    
+    <div class="profile">
+        <img class="profileAvatar">
+        <br>
+        <input class="profileName"></input>
+        <br>
+        <input class="profileEmail" disabled></input>
+        <br>
+        <input class="profileSchool"></input>
+        <br>
+        <button id="updateProfile">update inforemation</button>
+    </div>
     
     
     

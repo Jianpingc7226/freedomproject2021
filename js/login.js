@@ -1,5 +1,5 @@
   // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  0// For Firebase JS SDK v7.20.0 and later, measurementId is optional
   var firebaseConfig = {
     apiKey: "AIzaSyBQ4XdWMUmXg-cELPpiSmAmSszdc3aIPUs",
     authDomain: "tryout-9b2b7.firebaseapp.com",
@@ -25,8 +25,12 @@
 
   const Login = document.querySelector("#googleLogin")
   const Loginbox = document.querySelector(".logInBox")
-  const img = document.querySelector(".Avatar")
+  const rightTopImg = document.querySelector(".Avatar")
   const logout = document.querySelector("#signOut")
+  const formePage = document.querySelector(".forum")
+  const profileButton = document.querySelector(".goToProfile") 
+  const profilePage = document.querySelector(".profile")
+  
   
   Login.addEventListener('click',function(){
       const provider = new firebase.auth.GoogleAuthProvider();
@@ -42,21 +46,73 @@
   logout.addEventListener('click',e=>{
     firebase.auth().signOut();
   })
-
+  
+var userInformation = "";
   firebase.auth().onAuthStateChanged(firebaseUser =>{
     if(firebaseUser) {
-      console.log(firebaseUser);
+      console.log(firebaseUser)
       Loginbox.classList.add('hide')
       logout.classList.remove('hide')
-      img.classList.remove('hide')
-      img.src = firebaseUser.photoURL
+      rightTopImg.classList.remove('hide')
+      rightTopImg.src = firebaseUser.photoURL
+      profileUserAvatar.src = firebaseUser.photoURL
+      profileUserNamer.value = firebaseUser.displayName
+      profileUserEmail.value = firebaseUser.email
     }else{
       console.log('not logged in');
       Loginbox.classList.remove('hide')
       logout.classList.add('hide')
-      img.classList.add('hide')
+      rightTopImg.classList.add('hide')
+      profilePage.classList.add('hide')
     }
   })
+  
+  
+  
+  //This comes the profile part.
+  
+  var user = firebase.auth().currentUser;
+  
+  profileButton.addEventListener("click",function(){
+    profilePage.classList.remove('hide')
+  })
+  
+  var userName="";
+  var userSchool = "";
+  
+  
+  const profileUserAvatar =document.querySelector(".profileAvatar");
+      
+  const profileUserName = document.querySelector(".profileName");
+  profileUserNamer.addEventListener("keyup",function(event){
+    userName= event.target.value
+  })
+  const profileUserEmail = document.querySelector(".profileEmail");
+  const profileUserSchool = document.querySelector(".profileSchool");
+  profileUserSchool.addEventListener("keyup",function(event){
+    userSchool= event.trager.value
+  })
+  const profileUpdate = document.getElementById('updateProfile');
+  
+  profileUpdate.addEventListener('click',function(){
+    
+    user.updateProfile({
+      displayName: userName,
+      
+    }).then(function() {
+      // Update successful.
+    }).catch(function(error) {
+      // An error happened.
+    });
+
+
+  })
+  
+
+  
+
+  
+  
 
   
 

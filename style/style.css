@@ -1,6 +1,4 @@
-#school{
-    display: none;
-}
+
 
 .block{
   width: 100%;
@@ -40,6 +38,7 @@ li a {
   text-decoration: none;
 }
 
+
 li a:hover:not(.active) {
   background-color: #111;
 }
@@ -56,6 +55,6 @@ padding: 10px;
   display:none;
 }
 
-.userAvatar{
-  padding:auto;
+#Navigationimg{
+  float:right;
 }
