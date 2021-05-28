@@ -74,24 +74,12 @@ var userInformation = "";
   var userName = userInformation.displayName;
   var userSchool = "";
   
-  var docRef = db.collection("user").doc(userInformation.uid)
+  var docRef = db.collection("User").doc(userInformation.uid)
   
-  docRef.get()
-    .then((doc) => {
-      if (doc.exists) {
-            console.log("Document data:", doc.data());
-        } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
-        }
-    }).catch((error) => {
-        console.log("Error getting document:", error);
+  docRef.onSnapshot(function(doc){
+    const data = doc.data();
+    console.log(data.school)
   });
-
-
-
-
-
 
 
   
