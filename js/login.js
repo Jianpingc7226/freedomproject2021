@@ -56,7 +56,7 @@ var userInformation = "";
       rightTopImg.classList.remove('hide')
       rightTopImg.src = firebaseUser.photoURL
       profileUserAvatar.src = firebaseUser.photoURL
-      profileUserNamer.value = firebaseUser.displayName
+      profileUserName.value = firebaseUser.displayName
       profileUserEmail.value = firebaseUser.email
     }else{
       console.log('not logged in');
@@ -69,7 +69,7 @@ var userInformation = "";
   
   
   
-  //This comes the profile part.
+  //This comes the profile part.(firebase firestorge)
   
   var user = firebase.auth().currentUser;
   
@@ -84,7 +84,7 @@ var userInformation = "";
   const profileUserAvatar =document.querySelector(".profileAvatar");
       
   const profileUserName = document.querySelector(".profileName");
-  profileUserNamer.addEventListener("keyup",function(event){
+  profileUserName.addEventListener("keyup",function(event){
     userName= event.target.value
   })
   const profileUserEmail = document.querySelector(".profileEmail");
@@ -94,19 +94,7 @@ var userInformation = "";
   })
   const profileUpdate = document.getElementById('updateProfile');
   
-  profileUpdate.addEventListener('click',function(){
-    
-    user.updateProfile({
-      displayName: userName,
-      
-    }).then(function() {
-      // Update successful.
-    }).catch(function(error) {
-      // An error happened.
-    });
 
-
-  })
   
 
   
