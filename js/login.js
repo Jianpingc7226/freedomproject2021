@@ -25,6 +25,10 @@
   const profileButton = document.querySelector(".goToProfile") 
   const profilePage = document.querySelector(".profile")
   
+  //user value
+  var userName = "";
+  var userSchool = "";
+  
   
   Login.addEventListener('click',function(){
       const provider = new firebase.auth.GoogleAuthProvider();
@@ -51,8 +55,20 @@ var userInformation = "";
       rightTopImg.classList.remove('hide')
       rightTopImg.src = firebaseUser.photoURL
       profileUserAvatar.src = firebaseUser.photoURL
-      profileUserName.value = firebaseUser.displayName
       profileUserEmail.value = firebaseUser.email
+      db.collection("User").doc(userInformation.uid).onSnapshot((doc) => {
+        var userData = doc.data()
+        console.log(userData)
+        if (doc.exists) {
+            console.log("There is data");
+            profileUserName.value = userData.name
+            profileUserSchool.value = userData.school
+        } else {
+            // doc.data() will be undefined in this case
+            alert("please update your user information")
+        }
+      });
+      profilePage.classList.remove('hide')
     }else{
       console.log('not logged in');
       Loginbox.classList.remove('hide')
@@ -71,15 +87,9 @@ var userInformation = "";
   profileButton.addEventListener("click",function(){
     profilePage.classList.remove('hide')
   })
-  var userName = "";
-  var userSchool = "";
+
   
-  // var docRef = db.collection("User").doc(userInformation.uid)
-  
-  // docRef.onSnapshot(function(doc){
-  //   const data = doc.data();
-  //   console.log(data.school)
-  // });
+
   //this line of code should pull user information from firestore cloud, but for some reason this didn't work  PS:remember to ask Mr.Mueller next week
 
   
@@ -94,6 +104,7 @@ var userInformation = "";
     userSchool= School.target.value
   })
   const profileUpdate = document.getElementById('updateProfile');
+  
   profileUpdate.addEventListener("click",function(){
     db.collection("User").doc(userInformation.uid).set({
         name:profileUserName.value,
@@ -102,6 +113,7 @@ var userInformation = "";
     })
     .then(() => {
         console.log("Document successfully written!");
+        
     })
     .catch((error) => {
         console.error("Error writing document: ", error);
