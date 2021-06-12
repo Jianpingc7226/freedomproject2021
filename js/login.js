@@ -74,9 +74,8 @@ var userInformation = "";
             alert("please update your user information")
         }
       })
-        postCollection.classList.remove('hide')
-    db.collection("posts")
-    .get()
+        forumePage.classList.remove('hide')
+    db.collection("posts").get()
     .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
         postData = doc.data()
@@ -104,7 +103,7 @@ var userInformation = "";
           postPage.classList.add('hide')
           postComment.classList.remove('hide')
           if(postID != ""){
-            db.collection("posts").doc(postID).get().then((doc)=>{
+          db.collection("posts").doc(postID).get().then((doc)=>{
                 var currentPostData = doc.data()
                 var titleOfCurrentPost = document.createElement("h2")
                 titleOfCurrentPost.innerHTML=currentPostData.title
@@ -112,8 +111,8 @@ var userInformation = "";
                 introductionOfCurrentPost.innerHTML=currentPostData.introduction
                 postArea.appendChild(titleOfCurrentPost)
                 postArea.appendChild(introductionOfCurrentPost)
-            })
-            db.collection("posts").doc(postID).collection("content")
+          })
+          db.collection("posts").doc(postID).collection("content")
               .onSnapshot((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
                 var postContentData = doc.data()
@@ -148,6 +147,14 @@ var userInformation = "";
     .catch((error) => {
         console.log("Error getting documents: ", error);
     });
+  }else{
+    profilePage.classList.add('hide')
+    forumePage.classList.add('hide')
+    Loginbox.classList.remove('hide')
+    postComment.classList.add('hide')
+    logout.classList.add('hide')
+    rightTopImg.classList.add('hide')
+    console.log("not login")
   }})
 
 
@@ -161,7 +168,7 @@ var userInformation = "";
     profilePage.classList.remove('hide')
     forumePage.classList.add('hide')
     postPage.classList.add('hide')
-
+    postComment.classList.add('hide')
     } else {
       alert('you are not loggin')
     }
@@ -202,10 +209,11 @@ var userInformation = "";
 var userInformationOnContent = ""
 var postsNow = ""
   //This comes the forum part.(firebase firestorge)
-  forumButton.addEventListener("click",function(){
+forumButton.addEventListener("click",function(){
     forumePage.classList.remove('hide')
     profilePage.classList.add('hide')
     postPage.classList.add('hide')
+    postComment.classList.add('hide')
 });
 
 
