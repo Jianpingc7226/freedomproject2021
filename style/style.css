@@ -3,7 +3,7 @@
 .block{
   width: 100%;
   background-color: black;
-  height: 44px;
+  height: 58px;
 }
 
 
@@ -65,4 +65,48 @@ padding: 10px;
   border: 3px solid green;
   padding: 10px;
   text-align: center;
+}
+
+
+
+
+
+
+
+.wrapper {
+  width: 50%;
+  margin: 0 auto;
+  background: #e7e7e7;
+
+}
+
+.wrapper :hover:not(.active) {
+  background-color: gray;
+}
+
+
+.content {
+  width: 60%;
+  float: left;
+  border: 5px solid gray;
+}
+
+
+
+
+.introductionOfPost
+{
+    height:200px;
+    font-size:14pt;
+}
+
+    .postMessage {margin-bottom: 15px; }
+    .image {float:left; margin-right: 10px; }
+    .user {float:left; font-weight:bold; color:#009; margin-bottom: 5px; }
+    .postContent { margin-left: 30px;font-style:italic; color:black; }
+
+.reaspondOfPost
+{
+    height:200px;
+    font-size:14pt;
 }

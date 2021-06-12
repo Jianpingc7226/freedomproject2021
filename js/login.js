@@ -21,18 +21,24 @@
   const Loginbox = document.querySelector(".logInBox")
   const rightTopImg = document.querySelector(".Avatar")
   const logout = document.querySelector("#signOut")
-  const formePage = document.querySelector(".forum")
-  const profileButton = document.querySelector(".goToProfile") 
+  const forumePage = document.querySelector(".forum")
+  const forumButton=document.querySelector(".goToForum")
+  const profileButton = document.querySelector(".goToProfile")
   const profilePage = document.querySelector(".profile")
-  
+  const postCollection = document.querySelector('.posts')
+  const postComment=document.querySelector('.nmd')
+  const postArea = document.querySelector('.postBox')
+  var postID = ""
   //user value
   var userName = "";
   var userSchool = "";
   
-  
+
+
+
   Login.addEventListener('click',function(){
       const provider = new firebase.auth.GoogleAuthProvider();
-      
+
       firebase.auth().signInWithPopup(provider)
       .then(result =>{
         const user = result.user;
@@ -40,11 +46,11 @@
       })
       .catch(console.log)
   })
-  
+
   logout.addEventListener('click',e=>{
     firebase.auth().signOut();
   })
-  
+
 var userInformation = "";
   firebase.auth().onAuthStateChanged(firebaseUser =>{
     if(firebaseUser) {
@@ -67,32 +73,104 @@ var userInformation = "";
             // doc.data() will be undefined in this case
             alert("please update your user information")
         }
-      });
-      profilePage.classList.remove('hide')
-    }else{
-      console.log('not logged in');
-      Loginbox.classList.remove('hide')
-      logout.classList.add('hide')
-      rightTopImg.classList.add('hide')
-      profilePage.classList.add('hide')
-    }
-  })
-  
-  
-  
+      })
+        postCollection.classList.remove('hide')
+    db.collection("posts")
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+        postData = doc.data()
+        var wrapper = document.createElement('div')
+        wrapper.classList.add('wrapper')
+        wrapper.setAttribute('id',postData.title);
+        var content = document.createElement('div')
+        content.classList.add('content')
+        content.setAttribute('id',postData.id);
+        var title = document.createElement('h1')
+        title.classList.add('title')
+        var introduction = document.createElement('p')
+        introduction.classList.add('introduction')
+        title.innerHTML = postData.title
+        introduction.innerHTML = postData.introduction
+        postCollection.appendChild(wrapper)
+        wrapper.appendChild(content)
+        content.appendChild(title)
+        content.appendChild(introduction)
+        content.onclick=function(event){
+        postID=doc.id
+        console.log(postID)
+          profilePage.classList.add('hide')
+          forumePage.classList.add('hide')
+          postPage.classList.add('hide')
+          postComment.classList.remove('hide')
+          if(postID != ""){
+            db.collection("posts").doc(postID).get().then((doc)=>{
+                var currentPostData = doc.data()
+                var titleOfCurrentPost = document.createElement("h2")
+                titleOfCurrentPost.innerHTML=currentPostData.title
+                var introductionOfCurrentPost = document.createElement("p")
+                introductionOfCurrentPost.innerHTML=currentPostData.introduction
+                postArea.appendChild(titleOfCurrentPost)
+                postArea.appendChild(introductionOfCurrentPost)
+            })
+            db.collection("posts").doc(postID).collection("content")
+              .onSnapshot((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                var postContentData = doc.data()
+                var postMassage = document.createElement('div')
+                postMassage.classList.add('postMessage')
+                var image = document.createElement('div')
+                image.classList.add('image')
+                var userImg = document.createElement('img')
+                userImg.src = postContentData.avatar
+                var postUserName = document.createElement('div')
+                postUserName.classList.add('userName')
+                postUserName.innerHTML = postContentData.userName
+                var clear = document.createElement('div')
+                clear.style.clear = "both"
+                var postContent = document.createElement('div')
+                postContent.classList.add('postContent')
+                postContent.innerHTML = postContentData.respond
+                console.log(postContentData)
+                postArea.appendChild(postMassage)
+                postMassage.appendChild(image)
+                image.appendChild(userImg)
+                postMassage.appendChild(postUserName)
+                postMassage.appendChild(clear)
+                postMassage.appendChild(postContent)
+                    });
+                  });
+                }
+        }
+            console.log(doc.id, " => ", doc.data());
+        });
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+  }})
+
+
+
   //This comes the profile part.(firebase firestorge)
-  
+
   var user = firebase.auth().currentUser;
   //When the profile button are clicked
   profileButton.addEventListener("click",function(){
+    if(userInformation != ""){
     profilePage.classList.remove('hide')
+    forumePage.classList.add('hide')
+    postPage.classList.add('hide')
+
+    } else {
+      alert('you are not loggin')
+    }
   })
 
-  
 
-  //this line of code should pull user information from firestore cloud, but for some reason this didn't work  PS:remember to ask Mr.Mueller next week
 
-  
+
+
   const profileUserAvatar =document.querySelector(".profileAvatar");
   const profileUserName = document.querySelector(".profileName");
   profileUserName.addEventListener("keyup",function(event){
@@ -104,29 +182,91 @@ var userInformation = "";
     userSchool= School.target.value
   })
   const profileUpdate = document.getElementById('updateProfile');
-  
+
   profileUpdate.addEventListener("click",function(){
     db.collection("User").doc(userInformation.uid).set({
         name:profileUserName.value,
         email:userInformation.email,
-        school:userSchool
+        school:userSchool,
+        avatar:userInformation.photoURL
     })
     .then(() => {
         console.log("Document successfully written!");
-        
+
     })
     .catch((error) => {
         console.error("Error writing document: ", error);
     });
   })
-  
 
-  
+var userInformationOnContent = ""
+var postsNow = ""
+  //This comes the forum part.(firebase firestorge)
+  forumButton.addEventListener("click",function(){
+    forumePage.classList.remove('hide')
+    profilePage.classList.add('hide')
+    postPage.classList.add('hide')
+});
 
-  
 
-  
-  
 
-  
 
+
+//here comes the post part (cloud firestore)
+  var postPage=document.querySelector('.post')
+  var postButton = document.querySelector('.postSomeThing')
+  postButton.addEventListener('click',function(){
+      profilePage.classList.add('hide')
+      forumePage.classList.add('hide')
+      postPage.classList.remove('hide')
+  })
+
+  var titleOfThePost = document.querySelector(".titleOfPost")
+  var introductionOfThePost = document.querySelector(".introductionOfPost")
+
+
+    const postUpdate = document.querySelector('.postSubmit');
+
+  postUpdate.addEventListener("click",function(){
+    db.collection("posts").doc(titleOfThePost.value).set({
+      title : titleOfThePost.value,
+      introduction:introductionOfThePost.value,
+      views:1
+    })
+    db.collection("posts").doc(titleOfThePost.value).collection("content").set({
+    })
+    .then(() => {
+        console.log("Document successfully written!");
+        titleOfThePost.value = ""
+        introductionOfThePost.value = ""
+    })
+    .catch((error) => {
+        console.error("Error writing document: ", error);
+    });
+  })
+
+
+//this part comes the nmd part(cloud firestore)
+
+const commentBox = document.querySelector('.reaspondOfPost')
+const submitComment = document.querySelector('.Comment')
+var CommentOfthePost = ""
+commentBox.addEventListener("keyup",function(event){
+  CommentOfthePost = event.target.value
+})
+
+
+submitComment.addEventListener("click",function(){
+    db.collection("posts").doc(postID).collection('content').doc().set({
+      avatar:userInformation.photoURL,
+      respond:CommentOfthePost,
+      userID:userInformation.uid,
+      userName:profileUserName.value
+  })
+  .then(() => {
+      console.log("Document successfully written!");
+  })
+  .catch((error) => {
+      console.error("Error writing document: ", error);
+  });
+})

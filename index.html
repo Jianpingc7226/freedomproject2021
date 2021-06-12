@@ -18,7 +18,7 @@
     <body>
     <ul>
         <li><a href="index.html"><img src="LogoMakr_2ubFXD.png" height="21px"></a></li>
-        <li class="forum notLoginyet"><a>forum</a></li>
+        <li class="goToForum notLoginyet"><a>forum</a></li>
         <li class="goToProfile notLoginyet"><a>profile</a></li>
         <!--<li><a id="Homepage">About</a></li>-->
         <li id = "signOut" ><a>Logout</a></li>
@@ -41,7 +41,7 @@
     
     
     
-    <div class="profile">
+    <div class="profile hide">
         <img class="profileAvatar">
         <br>
         
@@ -63,15 +63,34 @@
     
     
     
-    <div class="forum">
+    <div class="forum hide">
         
+
+         <button class="postSomeThing">post</button>
         
-        
-        
+        <div class="posts"></div>
         
     </div>
     
+    <div class="post hide">
+        
+        
+        <h1>title of your post</h1>
+        <input class="titleOfPost">
+        <h5>introduction of your post</h5>
+        <input class="introductionOfPost">
+        <button class="postSubmit">POST!!</button>
+        
+    </div>
     
+    <div class="nmd hide">
+        <div class="postBox">
+
+        </div>
+        <input class="reaspondOfPost">
+        <button class="Comment">Comment</button>
+    </div>
+
     
     
     
