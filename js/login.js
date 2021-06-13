@@ -28,11 +28,103 @@
   const postCollection = document.querySelector('.posts')
   const postComment=document.querySelector('.nmd')
   const postArea = document.querySelector('.postBox')
+
   var postID = ""
   //user value
   var userName = "";
   var userSchool = "";
   
+function refreashPost() {
+  // While there are remaining children elements inside .postBox
+  while(postArea.children.length > 0) {
+    // Remove the element
+    postArea.children[0].remove();
+  }
+}
+
+function refreshForume(){
+    // While there are remaining children elements inside .postBox
+  while(postCollection.children.length > 0) {
+    // Remove the element
+    postCollection.children[0].remove();
+    db.collection("posts").get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+        postData = doc.data()
+        var wrapper = document.createElement('div')
+        wrapper.classList.add('wrapper')
+        wrapper.setAttribute('id',postData.title);
+        var content = document.createElement('div')
+        content.classList.add('content')
+        content.setAttribute('id',postData.id);
+        var title = document.createElement('h1')
+        title.classList.add('title')
+        var introduction = document.createElement('p')
+        introduction.classList.add('introduction')
+        title.innerHTML = postData.title
+        introduction.innerHTML = postData.introduction
+        postCollection.appendChild(wrapper)
+        wrapper.appendChild(content)
+        content.appendChild(title)
+        content.appendChild(introduction)
+        content.onclick=function(event){
+        postID=doc.id
+        console.log(postID)
+          profilePage.classList.add('hide')
+          forumePage.classList.add('hide')
+          postPage.classList.add('hide')
+          postComment.classList.remove('hide')
+          if(postID != ""){
+          db.collection("posts").doc(postID).get().then((doc)=>{
+                var currentPostData = doc.data()
+                var titleOfCurrentPost = document.createElement("h2")
+                titleOfCurrentPost.innerHTML=currentPostData.title
+                var introductionOfCurrentPost = document.createElement("p")
+                introductionOfCurrentPost.innerHTML=currentPostData.introduction
+                var titleAndIntroduction = document.createElement("div")
+                titleAndIntroduction.classList.add('titleAndIntroduction')
+                postArea.appendChild(titleAndIntroduction)
+                titleAndIntroduction.appendChild(titleOfCurrentPost)
+                titleAndIntroduction.appendChild(introductionOfCurrentPost)
+          })
+          db.collection("posts").doc(postID).collection("content")
+              .onSnapshot((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                var postContentData = doc.data()
+                var postMassage = document.createElement('div')
+                postMassage.classList.add('postMessage')
+                var image = document.createElement('div')
+                image.classList.add('image')
+                var userImg = document.createElement('img')
+                userImg.src = postContentData.avatar
+                var postUserName = document.createElement('div')
+                postUserName.classList.add('userName')
+                postUserName.innerHTML = postContentData.userName    +  " from "  + postContentData.userSchool
+                var clear = document.createElement('div')
+                clear.style.clear = "both"
+                var postContent = document.createElement('div')
+                postContent.classList.add('postContent')
+                postContent.innerHTML = postContentData.respond
+                console.log(postContentData)
+                postArea.appendChild(postMassage)
+                postMassage.appendChild(image)
+                image.appendChild(userImg)
+                postMassage.appendChild(postUserName)
+                postMassage.appendChild(clear)
+                postMassage.appendChild(postContent)
+                    });
+                  });
+                }
+        }
+            console.log(doc.id, " => ", doc.data());
+        });
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+  }
+}
+
 
 
 
@@ -49,6 +141,7 @@
 
   logout.addEventListener('click',e=>{
     firebase.auth().signOut();
+    refreashPost()
   })
 
 var userInformation = "";
@@ -109,8 +202,11 @@ var userInformation = "";
                 titleOfCurrentPost.innerHTML=currentPostData.title
                 var introductionOfCurrentPost = document.createElement("p")
                 introductionOfCurrentPost.innerHTML=currentPostData.introduction
-                postArea.appendChild(titleOfCurrentPost)
-                postArea.appendChild(introductionOfCurrentPost)
+                var titleAndIntroduction = document.createElement("div")
+                titleAndIntroduction.classList.add('titleAndIntroduction')
+                postArea.appendChild(titleAndIntroduction)
+                titleAndIntroduction.appendChild(titleOfCurrentPost)
+                titleAndIntroduction.appendChild(introductionOfCurrentPost)
           })
           db.collection("posts").doc(postID).collection("content")
               .onSnapshot((querySnapshot) => {
@@ -124,7 +220,7 @@ var userInformation = "";
                 userImg.src = postContentData.avatar
                 var postUserName = document.createElement('div')
                 postUserName.classList.add('userName')
-                postUserName.innerHTML = postContentData.userName
+                postUserName.innerHTML = postContentData.userName    +  " from "  + postContentData.userSchool
                 var clear = document.createElement('div')
                 clear.style.clear = "both"
                 var postContent = document.createElement('div')
@@ -169,6 +265,7 @@ var userInformation = "";
     forumePage.classList.add('hide')
     postPage.classList.add('hide')
     postComment.classList.add('hide')
+    refreashPost()
     } else {
       alert('you are not loggin')
     }
@@ -214,6 +311,7 @@ forumButton.addEventListener("click",function(){
     profilePage.classList.add('hide')
     postPage.classList.add('hide')
     postComment.classList.add('hide')
+    refreashPost()
 });
 
 
@@ -241,7 +339,12 @@ forumButton.addEventListener("click",function(){
       introduction:introductionOfThePost.value,
       views:1
     })
-    db.collection("posts").doc(titleOfThePost.value).collection("content").set({
+    db.collection("posts").doc(titleOfThePost.value).collection("content").doc().set({
+      avatar:userInformation.photoURL,
+      respond: introductionOfThePost.value,
+      userID:userInformation.uid,
+      userName:profileUserName.value,
+      userSchool:profileUserSchool.value
     })
     .then(() => {
         console.log("Document successfully written!");
@@ -269,7 +372,8 @@ submitComment.addEventListener("click",function(){
       avatar:userInformation.photoURL,
       respond:CommentOfthePost,
       userID:userInformation.uid,
-      userName:profileUserName.value
+      userName:profileUserName.value,
+      userSchool:profileUserSchool.value
   })
   .then(() => {
       console.log("Document successfully written!");
@@ -277,4 +381,5 @@ submitComment.addEventListener("click",function(){
   .catch((error) => {
       console.error("Error writing document: ", error);
   });
+  commentBox.value = ""
 })
