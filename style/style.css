@@ -28,6 +28,7 @@ ul {
 
 li {
   float: left;
+  color:white;
 }
 
 li a {
@@ -108,5 +109,11 @@ padding: 10px;
 .reaspondOfPost
 {
     height:200px;
+    width:500px;
     font-size:14pt;
+    padding:20px;
+}
+
+.reasondOfPost textarea {
+    resize: none;
 }

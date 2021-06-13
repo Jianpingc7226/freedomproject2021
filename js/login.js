@@ -47,6 +47,7 @@ function refreshForume(){
   while(postCollection.children.length > 0) {
     // Remove the element
     postCollection.children[0].remove();
+    
     db.collection("posts").get()
     .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -79,13 +80,10 @@ function refreshForume(){
                 var currentPostData = doc.data()
                 var titleOfCurrentPost = document.createElement("h2")
                 titleOfCurrentPost.innerHTML=currentPostData.title
-                var introductionOfCurrentPost = document.createElement("p")
-                introductionOfCurrentPost.innerHTML=currentPostData.introduction
                 var titleAndIntroduction = document.createElement("div")
                 titleAndIntroduction.classList.add('titleAndIntroduction')
                 postArea.appendChild(titleAndIntroduction)
                 titleAndIntroduction.appendChild(titleOfCurrentPost)
-                titleAndIntroduction.appendChild(introductionOfCurrentPost)
           })
           db.collection("posts").doc(postID).collection("content")
               .onSnapshot((querySnapshot) => {
