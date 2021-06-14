@@ -42,12 +42,17 @@ function refreashPost() {
   }
 }
 
+function deleteForumeList(){
+  while(postCollection.children.length > 0) {
+    // Remove the element
+    postCollection.children[0].remove();
+}
+}
 function refreshForume(){
     // While there are remaining children elements inside .postBox
   while(postCollection.children.length > 0) {
     // Remove the element
     postCollection.children[0].remove();
-    
     db.collection("posts").get()
     .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -123,50 +128,8 @@ function refreshForume(){
   }
 }
 
-
-
-
-  Login.addEventListener('click',function(){
-      const provider = new firebase.auth.GoogleAuthProvider();
-
-      firebase.auth().signInWithPopup(provider)
-      .then(result =>{
-        const user = result.user;
-        console.log(`Hellow ${user.photoURL}`)
-      })
-      .catch(console.log)
-  })
-
-  logout.addEventListener('click',e=>{
-    firebase.auth().signOut();
-    refreashPost()
-  })
-
-var userInformation = "";
-  firebase.auth().onAuthStateChanged(firebaseUser =>{
-    if(firebaseUser) {
-      console.log(firebaseUser)
-      userInformation = firebaseUser
-      Loginbox.classList.add('hide')
-      logout.classList.remove('hide')
-      rightTopImg.classList.remove('hide')
-      rightTopImg.src = firebaseUser.photoURL
-      profileUserAvatar.src = firebaseUser.photoURL
-      profileUserEmail.value = firebaseUser.email
-      db.collection("User").doc(userInformation.uid).onSnapshot((doc) => {
-        var userData = doc.data()
-        console.log(userData)
-        if (doc.exists) {
-            console.log("There is data");
-            profileUserName.value = userData.name
-            profileUserSchool.value = userData.school
-        } else {
-            // doc.data() will be undefined in this case
-            alert("please update your user information")
-        }
-      })
-        forumePage.classList.remove('hide')
-    db.collection("posts").get()
+function loadPostList(){
+      db.collection("posts").get()
     .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
         postData = doc.data()
@@ -241,6 +204,50 @@ var userInformation = "";
     .catch((error) => {
         console.log("Error getting documents: ", error);
     });
+}
+
+
+  Login.addEventListener('click',function(){
+      const provider = new firebase.auth.GoogleAuthProvider();
+
+      firebase.auth().signInWithPopup(provider)
+      .then(result =>{
+        const user = result.user;
+        console.log(`Hellow ${user.photoURL}`)
+      })
+      .catch(console.log)
+  })
+
+  logout.addEventListener('click',e=>{
+    firebase.auth().signOut();
+    refreashPost()
+  })
+
+
+var userInformation = "";
+  firebase.auth().onAuthStateChanged(firebaseUser =>{
+    if(firebaseUser) {
+      console.log(firebaseUser)
+      userInformation = firebaseUser
+      Loginbox.classList.add('hide')
+      logout.classList.remove('hide')
+      rightTopImg.classList.remove('hide')
+      rightTopImg.src = firebaseUser.photoURL
+      profileUserAvatar.src = firebaseUser.photoURL
+      profileUserEmail.value = firebaseUser.email
+      db.collection("User").doc(userInformation.uid).onSnapshot((doc) => {
+        var userData = doc.data()
+        console.log(userData)
+        if (doc.exists) {
+            console.log("There is data");
+            profileUserName.value = userData.name
+            profileUserSchool.value = userData.school
+        } else {
+            alert("please update your user information")
+        }
+      })
+        forumePage.classList.remove('hide')
+        loadPostList()
   }else{
     profilePage.classList.add('hide')
     forumePage.classList.add('hide')
@@ -249,8 +256,9 @@ var userInformation = "";
     logout.classList.add('hide')
     rightTopImg.classList.add('hide')
     console.log("not login")
+    deleteForumeList()
+    userInformation = ""
   }})
-
 
 
   //This comes the profile part.(firebase firestorge)
@@ -268,7 +276,6 @@ var userInformation = "";
       alert('you are not loggin')
     }
   })
-
 
 
 
@@ -294,7 +301,6 @@ var userInformation = "";
     })
     .then(() => {
         console.log("Document successfully written!");
-
     })
     .catch((error) => {
         console.error("Error writing document: ", error);
@@ -305,11 +311,15 @@ var userInformationOnContent = ""
 var postsNow = ""
   //This comes the forum part.(firebase firestorge)
 forumButton.addEventListener("click",function(){
+      if(userInformation != ""){
     forumePage.classList.remove('hide')
     profilePage.classList.add('hide')
     postPage.classList.add('hide')
     postComment.classList.add('hide')
     refreashPost()
+    } else {
+      alert('you are not loggin')
+    }
 });
 
 
@@ -337,7 +347,7 @@ forumButton.addEventListener("click",function(){
       introduction:introductionOfThePost.value,
       views:1
     })
-    db.collection("posts").doc(titleOfThePost.value).collection("content").doc().set({
+    db.collection("posts").doc(titleOfThePost.value).collection("content").doc("1").set({
       avatar:userInformation.photoURL,
       respond: introductionOfThePost.value,
       userID:userInformation.uid,
